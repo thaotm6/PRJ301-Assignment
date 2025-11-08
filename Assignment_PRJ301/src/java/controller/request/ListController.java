@@ -6,6 +6,7 @@ package controller.request;
 
 import controller.iam.BaseRequiredAuthorizationController;
 import dal.RequestForLeaveDBContext;
+import dal.RoleDBContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,26 +14,42 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import model.RequestForLeave;
+import model.iam.Feature;
+import model.iam.Role;
 import model.iam.User;
 
 @WebServlet(urlPatterns = "/request/list")
 public class ListController extends BaseRequiredAuthorizationController {
 
-    protected void processRequest(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
-        RequestForLeaveDBContext db = new RequestForLeaveDBContext();
-        ArrayList<RequestForLeave> rfls = db.getByEmployeeAndSubodiaries(user.getId());
-        req.setAttribute("rfls", rfls);
-        req.getRequestDispatcher("../view/request/list.jsp").forward(req, resp);
-    }
-
     @Override
     protected void processPost(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
-        processRequest(req, resp, user);
+        processGet(req, resp, user);
     }
 
     @Override
     protected void processGet(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
-        processRequest(req, resp, user);
-    }
-
-}
+        // Load roles nếu chưa có
+        if (user.getRoles().isEmpty()) {
+            RoleDBContext roleDB = new RoleDBContext();
+            user.setRoles(roleDB.getByUserId(user.getId()));
+            req.getSession().setAttribute("auth", user);
+        }
+        
+        boolean canViewSubordinates = false;
+        boolean canReview = false;
+        for (Role role : user.getRoles()) {
+            if (!canViewSubordinates && (role.getId() == 1 || role.getId() == 2)) {
+                canViewSubordinates = true;
+            }
+            if (!canReview) {
+                for (Feature feature : role.getFeatures()) {
+                    if ("/request/review".equalsIgnoreCase(feature.getUrl())) {
+                        canReview = true;
+                        break;
+                    }
+                }
+            }
+            if (canViewSubordinates && canReview) {
+                break;
+            }
+        }
