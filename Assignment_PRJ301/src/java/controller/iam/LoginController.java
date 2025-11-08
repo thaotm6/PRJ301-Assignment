@@ -57,7 +57,8 @@ public class LoginController extends HttpServlet {
             req.getRequestDispatcher("view/auth/login.jsp").forward(req, resp);
             return;
         }
-         try {
+        
+        try {
             // Lấy IP address
             String ipAddress = getClientIpAddress(req);
             
@@ -96,7 +97,8 @@ public class LoginController extends HttpServlet {
                         redirectUrl = req.getContextPath() + redirectUrl;
                     }
                 }
-                 // Redirect về trang đích
+                
+                // Redirect về trang đích
                 resp.sendRedirect(redirectUrl);
             } else {
                 // Login thất bại
