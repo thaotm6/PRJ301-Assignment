@@ -1,15 +1,59 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
+<html lang="vi">
     <head>
-        <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hệ thống quản lý nghỉ phép</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background: linear-gradient(135deg, #f5f8ff, #e8eefc);
+                color: #2c3e50;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+            }
+            .container {
+                background: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 10px 35px rgba(31, 72, 133, 0.15);
+                padding: 48px 56px;
+                max-width: 520px;
+                text-align: center;
+            }
+            h1 {
+                margin-top: 0;
+                font-size: 28px;
+                margin-bottom: 16px;
+            }
+            p {
+                margin: 0 0 32px 0;
+                line-height: 1.6;
+                color: #4f5d75;
+            }
+            .login-btn {
+                display: inline-block;
+                padding: 12px 28px;
+                background-color: #3a6ff7;
+                color: #ffffff;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: background-color 0.2s ease;
+            }
+            .login-btn:hover {
+                background-color: #295ad1;
+            }
+        </style>
     </head>
     <body>
-        <div>TODO write content</div>
+        <main class="container">
+            <h1>Hệ thống quản lý nghỉ phép</h1>
+            <p>Vui lòng đăng nhập để quản lý, tạo và phê duyệt các đơn nghỉ phép cho phòng ban của bạn.</p>
+            <a class="login-btn" href="login">Đăng nhập</a>
+        </main>
     </body>
 </html>
