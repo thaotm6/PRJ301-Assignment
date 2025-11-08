@@ -45,5 +45,57 @@ public class RequestForLeaveDBContext extends DBContext<RequestForLeave> {
             closeConnection();
         }
     }
+    /**
+     * Lấy đơn xin nghỉ phép theo ID
+     */
+    @Override
+    public RequestForLeave get(int id) {
+        try {
+            String sql = """
+                         SELECT r.rid, r.created_by, r.create_time, r.[from], r.[to], r.reason, r.status,
+                                r.processed_by, r.processed_time, r.process_note,
+                                e.eid, e.ename,
+                                p.eid AS processed_eid, p.ename AS processed_ename
+                         FROM [RequestForLeave] r
+                         INNER JOIN [Employee] e ON r.created_by = e.eid
+                         LEFT JOIN [Employee] p ON r.processed_by = p.eid
+                         WHERE r.rid = ?
+                         """;
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                RequestForLeave request = new RequestForLeave();
+                request.setId(rs.getInt("rid"));
+                request.setCreateTime(rs.getTimestamp("create_time"));
+                request.setFrom(rs.getDate("from"));
+                request.setTo(rs.getDate("to"));
+                request.setReason(rs.getString("reason"));
+                request.setStatus(rs.getInt("status"));
+                request.setProcessedTime(rs.getTimestamp("processed_time"));
+                request.setProcessNote(rs.getString("process_note"));
+                
+                int processedId = rs.getInt("processed_eid");
+                if (!rs.wasNull()) {
+                    Employee processedEmployee = new Employee();
+                    processedEmployee.setId(processedId);
+                    processedEmployee.setName(rs.getString("processed_ename"));
+                    request.setProcessedBy(processedEmployee);
+                }
+                
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("eid"));
+                employee.setName(rs.getString("ename"));
+                request.setCreatedBy(employee);
+                
+                return request;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeConnection();
+        }
+        return null;
+    }
     
     
