@@ -96,3 +96,56 @@ public class LoginController extends HttpServlet {
                         redirectUrl = req.getContextPath() + redirectUrl;
                     }
                 }
+                 // Redirect về trang đích
+                resp.sendRedirect(redirectUrl);
+            } else {
+                // Login thất bại
+                // Log thất bại
+                logAttempt(username, ipAddress, false, "Invalid username or password");
+                
+                req.setAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
+                req.setAttribute("username", username); // Giữ lại username để user không phải nhập lại
+                req.getRequestDispatcher("view/auth/login.jsp").forward(req, resp);
+            }
+        } catch (Exception ex) {
+            // Xử lý lỗi hệ thống
+            logAttempt(username, getClientIpAddress(req), false, "System error: " + ex.getMessage());
+            req.setAttribute("error", "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau!");
+            req.getRequestDispatcher("view/auth/login.jsp").forward(req, resp);
+        }
+    }
+    
+    /**
+     * Lấy địa chỉ IP thực của client (xử lý proxy/load balancer)
+     */
+    private String getClientIpAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
+        
+        // Nếu có nhiều IP (qua proxy), lấy IP đầu tiên
+        if (ipAddress != null && ipAddress.contains(",")) {
+            ipAddress = ipAddress.split(",")[0].trim();
+        }
+        
+        return ipAddress != null ? ipAddress : "unknown";
+    }
+    
+    private void logAttempt(String username, String ipAddress, boolean success, String failureReason) {
+        LoginAttemptDBContext attemptLogger = new LoginAttemptDBContext();
+        attemptLogger.logLoginAttempt(username, ipAddress, success, failureReason);
+    }
+}
