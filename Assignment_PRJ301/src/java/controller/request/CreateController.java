@@ -68,6 +68,7 @@ public class CreateController extends BaseRequiredAuthorizationController {
             req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
             return;
         }
+        
         // Parse dates
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date fromDate = null;
@@ -90,7 +91,8 @@ public class CreateController extends BaseRequiredAuthorizationController {
             req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
             return;
         }
-         // Kiểm tra ngày bắt đầu không được là quá khứ (tùy chọn - có thể cho phép nghỉ trong quá khứ)
+        
+        // Kiểm tra ngày bắt đầu không được là quá khứ (tùy chọn - có thể cho phép nghỉ trong quá khứ)
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
         cal.set(java.util.Calendar.MINUTE, 0);
@@ -138,4 +140,66 @@ public class CreateController extends BaseRequiredAuthorizationController {
             req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
         }
     }
+    
+    private void prepareFormData(HttpServletRequest req, User user, RequestForLeave latestRequest) {
+        Employee employee = user.getEmployee();
+        req.setAttribute("currentUser", user);
+        if (employee != null) {
+            req.setAttribute("employeeName", employee.getName());
+            Department dept = employee.getDept();
+            req.setAttribute("employeeDeptName", dept != null ? dept.getName() : "Chưa cập nhật");
+        } else {
+            req.setAttribute("employeeName", "Không xác định");
+            req.setAttribute("employeeDeptName", "Chưa cập nhật");
         }
+        
+        List<Role> roles = user.getRoles();
+        req.setAttribute("userRoles", roles);
+        String roleSummary = roles != null && !roles.isEmpty()
+                ? roles.stream()
+                        .map(Role::getName)
+                        .filter(Objects::nonNull)
+                        .distinct()
+                        .collect(Collectors.joining(", "))
+                : "Chưa được phân quyền";
+        req.setAttribute("roleSummary", roleSummary);
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String todayStr = dateFormat.format(new Date());
+        req.setAttribute("today", todayStr);
+        
+        Object fromAttr = req.getAttribute("fromDate");
+        String fromDateValue = null;
+        if (fromAttr instanceof String) {
+            fromDateValue = (String) fromAttr;
+        } else if (fromAttr != null) {
+            fromDateValue = fromAttr.toString();
+        }
+        if (fromDateValue == null || fromDateValue.isBlank()) {
+            req.setAttribute("fromDate", todayStr);
+            fromDateValue = todayStr;
+        }
+        
+        Object toAttr = req.getAttribute("toDate");
+        String toDateValue = null;
+        if (toAttr instanceof String) {
+            toDateValue = (String) toAttr;
+        } else if (toAttr != null) {
+            toDateValue = toAttr.toString();
+        }
+        if (toDateValue == null || toDateValue.isBlank()) {
+            req.setAttribute("toDate", fromDateValue);
+        }
+        
+        Object reasonAttr = req.getAttribute("reason");
+        if (reasonAttr == null) {
+            req.setAttribute("reason", "");
+        }
+        
+        if (latestRequest != null) {
+            req.setAttribute("latestRequestId", latestRequest.getId());
+            req.setAttribute("latestRequestStatus", latestRequest.getStatusName());
+        }
+    }
+    
+}
