@@ -93,3 +93,85 @@ public class ReviewController extends BaseRequiredAuthorizationController {
         forwardWithRequest(req, resp, refreshed != null ? refreshed : targetRequest, user,
                 updated && refreshed != null ? refreshed.getProcessNote() : note);
     }
+    @Override
+    protected void processGet(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
+        ensureRolesLoaded(req, user);
+        
+        String ridParam = req.getParameter("rid");
+        Integer rid = parseRequestId(ridParam);
+        
+        if (rid == null) {
+            req.setAttribute("error", "Mã đơn không hợp lệ.");
+            forwardWithRequest(req, resp, null, user, null);
+            return;
+        }
+        
+        RequestForLeave targetRequest = loadRequest(rid);
+        if (targetRequest == null) {
+            req.setAttribute("error", "Không tìm thấy đơn nghỉ phép.");
+            forwardWithRequest(req, resp, null, user, null);
+            return;
+        }
+        
+        forwardWithRequest(req, resp, targetRequest, user, targetRequest.getProcessNote());
+    }
+    
+    private void ensureRolesLoaded(HttpServletRequest req, User user) {
+        if (user.getRoles().isEmpty()) {
+            RoleDBContext roleDB = new RoleDBContext();
+            user.setRoles(roleDB.getByUserId(user.getId()));
+            req.getSession().setAttribute("auth", user);
+        }
+    }
+    
+    private Integer parseRequestId(String ridParam) {
+        if (ridParam == null || ridParam.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(ridParam);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+    
+    private RequestForLeave loadRequest(int rid) {
+        RequestForLeaveDBContext db = new RequestForLeaveDBContext();
+        return db.get(rid);
+    }
+    
+    private boolean isSupervisorOf(User user, RequestForLeave request) {
+        if (user == null || request == null || user.getEmployee() == null || request.getCreatedBy() == null) {
+            return false;
+        }
+        Employee employee = user.getEmployee();
+        if (employee.getId() == request.getCreatedBy().getId()) {
+            return false;
+        }
+        RequestForLeaveDBContext db = new RequestForLeaveDBContext();
+        return db.isSupervisor(employee.getId(), request.getCreatedBy().getId());
+    }
+    
+    private void forwardWithRequest(HttpServletRequest req, HttpServletResponse resp,
+            RequestForLeave targetRequest, User user, String noteValue) throws ServletException, IOException {
+        
+        boolean isSupervisor = targetRequest != null && isSupervisorOf(user, targetRequest);
+        boolean canAct = targetRequest != null
+                && targetRequest.getStatus() != null
+                && targetRequest.getStatus() == RequestForLeave.STATUS_INPROGRESS
+                && isSupervisor;
+        
+        req.setAttribute("currentUser", user);
+        req.setAttribute("targetRequest", targetRequest);
+        req.setAttribute("isSupervisor", isSupervisor);
+        req.setAttribute("canAct", canAct);
+        if (noteValue != null) {
+            req.setAttribute("noteInput", noteValue);
+        } else if (targetRequest != null) {
+            req.setAttribute("noteInput", targetRequest.getProcessNote());
+        }
+        
+        req.getRequestDispatcher("/view/request/review.jsp").forward(req, resp);
+    }
+    
+}
