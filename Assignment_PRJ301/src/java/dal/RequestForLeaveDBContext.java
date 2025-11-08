@@ -228,3 +228,103 @@ public class RequestForLeaveDBContext extends DBContext<RequestForLeave> {
         return false;
     }
     
+/**
+     * Kiểm tra xem nhân viên supervisorId có nằm trong chuỗi quản lý của employeeId hay không
+     * @param supervisorId id người quản lý cần kiểm tra
+     * @param employeeId id nhân viên tạo đơn
+     * @return true nếu supervisorId quản lý (trực tiếp hoặc gián tiếp) employeeId
+     */
+    public boolean isSupervisor(int supervisorId, int employeeId) {
+        if (supervisorId <= 0 || employeeId <= 0 || supervisorId == employeeId) {
+            return false;
+        }
+        try {
+            String sql = """
+                         WITH SupervisorChain AS (
+                             SELECT supervisorid
+                             FROM [Employee]
+                             WHERE eid = ?
+                             UNION ALL
+                             SELECT e.supervisorid
+                             FROM [Employee] e
+                             INNER JOIN SupervisorChain sc ON e.eid = sc.supervisorid
+                             WHERE e.supervisorid IS NOT NULL
+                         )
+                         SELECT 1
+                         FROM SupervisorChain
+                         WHERE supervisorid = ?
+                         """;
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, employeeId);
+            stm.setInt(2, supervisorId);
+            ResultSet rs = stm.executeQuery();
+            return rs.next();
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeConnection();
+        }
+        return false;
+    }
+    
+    @Override
+    public ArrayList<RequestForLeave> list() {
+        ArrayList<RequestForLeave> requests = new ArrayList<>();
+        try {
+            String sql = """
+                         SELECT r.rid, r.created_by, r.create_time, r.[from], r.[to], r.reason, r.status,
+                                r.processed_by, r.processed_time, r.process_note,
+                                e.eid, e.ename,
+                                p.eid AS processed_eid, p.ename AS processed_ename
+                         FROM [RequestForLeave] r
+                         INNER JOIN [Employee] e ON r.created_by = e.eid
+                         LEFT JOIN [Employee] p ON r.processed_by = p.eid
+                         ORDER BY r.create_time DESC
+                         """;
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                RequestForLeave request = new RequestForLeave();
+                request.setId(rs.getInt("rid"));
+                request.setCreateTime(rs.getTimestamp("create_time"));
+                request.setFrom(rs.getDate("from"));
+                request.setTo(rs.getDate("to"));
+                request.setReason(rs.getString("reason"));
+                request.setStatus(rs.getInt("status"));
+                request.setProcessedTime(rs.getTimestamp("processed_time"));
+                request.setProcessNote(rs.getString("process_note"));
+                
+                int processedId = rs.getInt("processed_eid");
+                if (!rs.wasNull()) {
+                    Employee processedEmployee = new Employee();
+                    processedEmployee.setId(processedId);
+                    processedEmployee.setName(rs.getString("processed_ename"));
+                    request.setProcessedBy(processedEmployee);
+                }
+                
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("eid"));
+                employee.setName(rs.getString("ename"));
+                request.setCreatedBy(employee);
+                
+                requests.add(request);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeConnection();
+        }
+        return requests;
+    }
+
+    @Override
+    public void update(RequestForLeave model) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void delete(RequestForLeave model) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+}
+    
