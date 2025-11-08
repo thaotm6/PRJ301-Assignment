@@ -57,3 +57,42 @@ public class LoginController extends HttpServlet {
             req.getRequestDispatcher("view/auth/login.jsp").forward(req, resp);
             return;
         }
+         try {
+            // Lấy IP address
+            String ipAddress = getClientIpAddress(req);
+            
+            // Kiểm tra số lần đăng nhập thất bại (bảo mật - chống brute force)
+            LoginAttemptDBContext attemptCounter = new LoginAttemptDBContext();
+            int failedAttempts = attemptCounter.countFailedAttempts(username, 15); // 15 phút gần nhất
+            
+            if (failedAttempts >= 5) {
+                // Quá nhiều lần thất bại, chặn tạm thời
+                req.setAttribute("error", "Tài khoản đã bị khóa tạm thời do quá nhiều lần đăng nhập thất bại. Vui lòng thử lại sau 15 phút!");
+                req.setAttribute("username", username);
+                logAttempt(username, ipAddress, false, "Account temporarily locked due to too many failed attempts");
+                req.getRequestDispatcher("view/auth/login.jsp").forward(req, resp);
+                return;
+            }
+            
+            UserDBContext db = new UserDBContext();
+            User u = db.get(username, password);
+            
+            if (u != null) {
+                // Login thành công
+                HttpSession session = req.getSession();
+                session.setAttribute("auth", u);
+                session.setMaxInactiveInterval(30 * 60); // Session timeout: 30 phút
+                
+                // Log thành công
+                logAttempt(username, ipAddress, true, null);
+                
+                // Lấy URL redirect nếu có (từ parameter hoặc referer)
+                String redirectUrl = req.getParameter("redirect");
+                if (redirectUrl == null || redirectUrl.isEmpty()) {
+                    redirectUrl = req.getContextPath() + "/home";
+                } else {
+                    // Đảm bảo redirect URL có context path
+                    if (!redirectUrl.startsWith(req.getContextPath())) {
+                        redirectUrl = req.getContextPath() + redirectUrl;
+                    }
+                }
