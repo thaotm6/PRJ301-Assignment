@@ -178,5 +178,53 @@ public class RequestForLeaveDBContext extends DBContext<RequestForLeave> {
         }
         return requests;
     }
+    /**
+     * Lấy danh sách đơn xin nghỉ phép của một nhân viên (chỉ đơn của mình)
+     */
+    public ArrayList<RequestForLeave> getByEmployeeId(int employeeId) {
+        return getByEmployeeId(employeeId, false);
+    }
     
+    /**
+     * Cập nhật trạng thái của đơn nghỉ phép (Approve/Reject)
+     * @param requestId mã đơn
+     * @param newStatus trạng thái mới
+     * @param processedById người xử lý
+     * @param processNote ghi chú xử lý (có thể null)
+     * @return true nếu cập nhật thành công
+     */
+    public boolean updateStatus(int requestId, int newStatus, int processedById, String processNote) {
+        try {
+            String sql = """
+                         UPDATE [RequestForLeave]
+                         SET [status] = ?,
+                             [processed_by] = ?,
+                             [processed_time] = GETDATE(),
+                             [process_note] = ?
+                         WHERE [rid] = ? AND [status] = ?
+                         """;
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, newStatus);
+            if (processedById > 0) {
+                stm.setInt(2, processedById);
+            } else {
+                stm.setNull(2, Types.INTEGER);
+            }
+            if (processNote != null) {
+                stm.setString(3, processNote);
+            } else {
+                stm.setNull(3, Types.VARCHAR);
+            }
+            stm.setInt(4, requestId);
+            stm.setInt(5, RequestForLeave.STATUS_INPROGRESS);
+            
+            int affectedRows = stm.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeConnection();
+        }
+        return false;
+    }
     
