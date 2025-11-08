@@ -4,7 +4,7 @@
  */
 package dal;
 
- java.util.ArrayList;
+import java.util.ArrayList;
 import model.iam.Role;
 import java.sql.*;
 import java.util.logging.Level;
