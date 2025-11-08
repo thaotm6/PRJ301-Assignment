@@ -105,3 +105,37 @@ public class CreateController extends BaseRequiredAuthorizationController {
         }
         
         try {
+            // Tạo đơn nghỉ phép
+            RequestForLeave request = new RequestForLeave();
+            request.setCreatedBy(user.getEmployee());
+            request.setFrom(fromDate);
+            request.setTo(toDate);
+            request.setReason(reason.trim());
+            request.setStatus(RequestForLeave.STATUS_INPROGRESS); // Trạng thái Inprogress khi mới tạo
+            
+            // Lưu vào database
+            RequestForLeaveDBContext db = new RequestForLeaveDBContext();
+            db.insert(request);
+            
+            if (request.getId() > 0) {
+                // Tạo thành công
+                req.setAttribute("message", "Tạo đơn nghỉ phép thành công! Mã đơn: #" + request.getId());
+                req.setAttribute("fromDate", null);
+                req.setAttribute("toDate", null);
+                req.setAttribute("reason", null);
+                prepareFormData(req, user, request);
+                req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
+            } else {
+                // Lỗi khi tạo
+                req.setAttribute("error", "Đã xảy ra lỗi khi tạo đơn nghỉ phép. Vui lòng thử lại!");
+                prepareFormData(req, user, null);
+                req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
+            }
+        } catch (Exception ex) {
+            // Xử lý lỗi hệ thống
+            req.setAttribute("error", "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau!");
+            prepareFormData(req, user, null);
+            req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
+        }
+    }
+        }
