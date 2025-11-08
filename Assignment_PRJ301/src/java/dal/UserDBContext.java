@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Employee;
+import model.Department;
 
 
 public class UserDBContext extends DBContext<User> {
@@ -17,17 +18,22 @@ public class UserDBContext extends DBContext<User> {
     public User get(String username, String password) {
         try {
             String sql = """
-                                     SELECT
-                                     u.uid,
-                                     u.username,
-                                     u.displayname,
-                                     e.eid,
-                                     e.ename
-                                     FROM [User] u INNER JOIN [Enrollment] en ON u.[uid] = en.[uid]
-                                     \t\t\t\t\tINNER JOIN [Employee] e ON e.eid = en.eid
-                                     \t\t\t\t\tWHERE
-                                     \t\t\t\t\tu.username = ? AND u.[password] = ?
-                                     \t\t\t\t\tAND en.active = 1""";
+                         SELECT
+                             u.uid,
+                             u.username,
+                             u.displayname,
+                             e.eid,
+                             e.ename,
+                             e.supervisorid,
+                             d.did,
+                             d.dname
+                         FROM [User] u 
+                         INNER JOIN [Enrollment] en ON u.[uid] = en.[uid]
+                         INNER JOIN [Employee] e ON e.eid = en.eid
+                         INNER JOIN [Division] d ON d.did = e.did
+                         WHERE
+                             u.username = ? AND u.[password] = ?
+                             AND en.active = 1""";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, username);
             stm.setString(2, password);
@@ -38,6 +44,18 @@ public class UserDBContext extends DBContext<User> {
                 Employee e = new Employee();
                 e.setId(rs.getInt("eid"));
                 e.setName(rs.getString("ename"));
+                Department department = new Department();
+                department.setId(rs.getInt("did"));
+                department.setName(rs.getString("dname"));
+                e.setDept(department);
+                
+                int supervisorId = rs.getInt("supervisorid");
+                if (!rs.wasNull()) {
+                    Employee supervisor = new Employee();
+                    supervisor.setId(supervisorId);
+                    e.setSupervisor(supervisor);
+                }
+                
                 u.setEmployee(e);
                 
                 u.setUsername(username);
