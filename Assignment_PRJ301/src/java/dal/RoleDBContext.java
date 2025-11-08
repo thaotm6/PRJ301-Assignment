@@ -4,7 +4,7 @@
  */
 package dal;
 
-import java.util.ArrayList;
+ java.util.ArrayList;
 import model.iam.Role;
 import java.sql.*;
 import java.util.logging.Level;
@@ -22,10 +22,11 @@ public class RoleDBContext extends DBContext<Role> {
             String sql = """
                                      SELECT r.rid,r.rname,f.fid,f.url
                                      FROM [User] u INNER JOIN [UserRole] ur ON u.uid = ur.uid
-                                     \t\t\t\t\t\tINNER JOIN [Role] r ON r.rid = ur.rid
-                                     \t\t\t\t\t\tINNER JOIN [RoleFeature] rf ON rf.rid = r.rid
-                                     \t\t\t\t\t\tINNER JOIN [Feature] f ON f.fid = rf.fid
-                                     \t\t\t\t\t\tWHERE u.uid = ?""";
+                                                     INNER JOIN [Role] r ON r.rid = ur.rid
+                                                     INNER JOIN [RoleFeature] rf ON rf.rid = r.rid
+                                                     INNER JOIN [Feature] f ON f.fid = rf.fid
+                                     WHERE u.uid = ?
+                                     ORDER BY r.rid, f.fid""";
 
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, id);
@@ -39,7 +40,7 @@ public class RoleDBContext extends DBContext<Role> {
                 if(rid != current.getId())
                 {
                     current = new Role();
-                    current.setId(id);
+                    current.setId(rid);
                     current.setName(rs.getString("rname"));
                     roles.add(current);
                 }
@@ -83,3 +84,4 @@ public class RoleDBContext extends DBContext<Role> {
     }
 
 }
+
