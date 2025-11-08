@@ -53,3 +53,23 @@ public class ListController extends BaseRequiredAuthorizationController {
                 break;
             }
         }
+        // Lấy danh sách đơn
+        RequestForLeaveDBContext db = new RequestForLeaveDBContext();
+        ArrayList<RequestForLeave> requests;
+        
+        if (user.getEmployee() != null) {
+            requests = db.getByEmployeeId(user.getEmployee().getId(), canViewSubordinates);
+        } else {
+            requests = new ArrayList<>();
+        }
+        
+        // Set vào request để hiển thị trong view
+        req.setAttribute("user", user);
+        req.setAttribute("requests", requests);
+        req.setAttribute("canViewSubordinates", canViewSubordinates);
+        req.setAttribute("canReview", canReview);
+        
+        req.getRequestDispatcher("/view/request/list.jsp").forward(req, resp);
+    }
+    
+}
