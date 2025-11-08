@@ -97,5 +97,86 @@ public class RequestForLeaveDBContext extends DBContext<RequestForLeave> {
         }
         return null;
     }
+     /**
+     * Lấy danh sách đơn xin nghỉ phép của một nhân viên và tất cả cấp dưới (recursive)
+     * @param employeeId ID của nhân viên
+     * @param includeSubordinates true nếu muốn lấy cả đơn của cấp dưới
+     * @return Danh sách đơn xin nghỉ phép
+     */
+    public ArrayList<RequestForLeave> getByEmployeeId(int employeeId, boolean includeSubordinates) {
+        ArrayList<RequestForLeave> requests = new ArrayList<>();
+        try {
+            String sql;
+            if (includeSubordinates) {
+                // Lấy đơn của nhân viên và tất cả cấp dưới (recursive CTE)
+                sql = """
+                      WITH Subordinates AS (
+                          SELECT eid FROM [Employee] WHERE eid = ?
+                          UNION ALL
+                          SELECT e.eid 
+                          FROM [Employee] e
+                          INNER JOIN Subordinates s ON e.supervisorid = s.eid
+                      )
+                      SELECT r.rid, r.created_by, r.create_time, r.[from], r.[to], r.reason, r.status,
+                             r.processed_by, r.processed_time, r.process_note,
+                             e.eid, e.ename,
+                             p.eid AS processed_eid, p.ename AS processed_ename
+                      FROM [RequestForLeave] r
+                      INNER JOIN [Employee] e ON r.created_by = e.eid
+                      LEFT JOIN [Employee] p ON r.processed_by = p.eid
+                      WHERE r.created_by IN (SELECT eid FROM Subordinates)
+                      ORDER BY r.create_time DESC
+                      """;
+            } else {
+                // Chỉ lấy đơn của nhân viên
+                sql = """
+                      SELECT r.rid, r.created_by, r.create_time, r.[from], r.[to], r.reason, r.status,
+                             r.processed_by, r.processed_time, r.process_note,
+                             e.eid, e.ename,
+                             p.eid AS processed_eid, p.ename AS processed_ename
+                      FROM [RequestForLeave] r
+                      INNER JOIN [Employee] e ON r.created_by = e.eid
+                      LEFT JOIN [Employee] p ON r.processed_by = p.eid
+                      WHERE r.created_by = ?
+                      ORDER BY r.create_time DESC
+                      """;
+            }
+            
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, employeeId);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                RequestForLeave request = new RequestForLeave();
+                request.setId(rs.getInt("rid"));
+                request.setCreateTime(rs.getTimestamp("create_time"));
+                request.setFrom(rs.getDate("from"));
+                request.setTo(rs.getDate("to"));
+                request.setReason(rs.getString("reason"));
+                request.setStatus(rs.getInt("status"));
+                request.setProcessedTime(rs.getTimestamp("processed_time"));
+                request.setProcessNote(rs.getString("process_note"));
+                
+                int processedId = rs.getInt("processed_eid");
+                if (!rs.wasNull()) {
+                    Employee processedEmployee = new Employee();
+                    processedEmployee.setId(processedId);
+                    processedEmployee.setName(rs.getString("processed_ename"));
+                    request.setProcessedBy(processedEmployee);
+                }
+                
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("eid"));
+                employee.setName(rs.getString("ename"));
+                request.setCreatedBy(employee);
+                
+                requests.add(request);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RequestForLeaveDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            closeConnection();
+        }
+        return requests;
+    }
     
     
