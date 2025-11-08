@@ -1,145 +1,138 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Đăng nhập - Hệ thống quản lý</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 20px;
-            }
-            .login-container {
-                background: white;
-                border-radius: 20px;
-                padding: 50px 40px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                max-width: 450px;
-                width: 100%;
-            }
-            .login-header {
-                text-align: center;
-                margin-bottom: 40px;
-            }
-            .login-header h1 {
-                color: #333;
-                font-size: 2em;
-                margin-bottom: 10px;
-                font-weight: 600;
-            }
-            .login-header p {
-                color: #666;
-                font-size: 0.95em;
-            }
-            .form-group {
-                margin-bottom: 25px;
-            }
-            .form-group label {
-                display: block;
-                color: #333;
-                font-weight: 500;
-                margin-bottom: 8px;
-                font-size: 0.95em;
-            }
-            .form-group input {
-                width: 100%;
-                padding: 12px 15px;
-                border: 2px solid #e0e0e0;
-                border-radius: 10px;
-                font-size: 1em;
-                transition: border-color 0.3s ease, box-shadow 0.3s ease;
-                outline: none;
-            }
-            .form-group input:focus {
-                border-color: #667eea;
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            }
-            .form-group input::placeholder {
-                color: #999;
-            }
-            .login-button {
-                width: 100%;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                border: none;
-                padding: 15px;
-                border-radius: 10px;
-                font-size: 1.1em;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-                margin-top: 10px;
-            }
-            .login-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-            }
-            .login-button:active {
-                transform: translateY(0);
-            }
-            .back-link {
-                text-align: center;
-                margin-top: 20px;
-            }
-            .back-link a {
-                color: #667eea;
-                text-decoration: none;
-                font-size: 0.9em;
-                transition: color 0.3s ease;
-            }
-            .back-link a:hover {
-                color: #764ba2;
-                text-decoration: underline;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="login-container">
-            <div class="login-header">
-                <h1>Đăng nhập</h1>
-                <p>Vui lòng đăng nhập để tiếp tục</p>
-            </div>
-            <form action="${pageContext.request.contextPath}/login" method="POST">
-                <c:if test="${not empty requestScope.error}">
-                    <div style="background-color: #fee; color: #c33; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fcc;">
-                        ${requestScope.error}
-                    </div>
-                </c:if>
-                <c:if test="${not empty requestScope.message}">
-                    <div style="background-color: #efe; color: #3c3; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cfc;">
-                        ${requestScope.message}
-                    </div>
-                </c:if>
-                <div class="form-group">
-                    <label for="txtUsername">Tên đăng nhập</label>
-                    <input type="text" name="username" id="txtUsername" placeholder="Nhập tên đăng nhập" value="${requestScope.username}" required/>
-                </div>
-                <div class="form-group">
-                    <label for="txtPassword">Mật khẩu</label>
-                    <input type="password" name="password" id="txtPassword" placeholder="Nhập mật khẩu" required/>
-                </div>
-                <c:if test="${not empty param.redirect}">
-                    <input type="hidden" name="redirect" value="${param.redirect}"/>
-                </c:if>
-                <input type="submit" id="btnLogin" class="login-button" value="Đăng nhập"/>
-            </form>
-            <div class="back-link">
-                <a href="${pageContext.request.contextPath}/">← Quay lại trang chủ</a>
-            </div>
+<html lang="vi">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Hệ thống quản lý</title>
+    <style>
+      /* ===== Blue Sea – Pastel, dịu mắt ===== */
+      *{margin:0;padding:0;box-sizing:border-box}
+      :root{
+        --bg-1:#bfe6ff;        /* xanh nhạt */
+        --bg-2:#81d4fa;        /* xanh biển dịu */
+        --text:#0c2a3f;        /* chữ chính */
+        --muted:#3f6b8a;       /* chữ phụ */
+        --surface:#ffffffee;   /* nền thẻ */
+        --primary:#2a8df2;     /* xanh chủ đạo */
+        --primary-200:#90caf9; /* viền nhạt */
+        --primary-600:#1877f2; /* hover */
+        --shadow:0 18px 48px rgba(9,30,66,.15);
+        --radius:18px;
+      }
+
+      body{
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height:100vh;
+        display:flex; align-items:center; justify-content:center;
+        padding:20px;
+        color:var(--text);
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        background-attachment: fixed;
+      }
+
+      .login-container{
+        width:100%; max-width:460px;
+        background:var(--surface);
+        border-radius:var(--radius);
+        padding:44px 38px;
+        box-shadow:var(--shadow);
+        backdrop-filter: blur(2px);
+      }
+
+      .login-header{ text-align:center; margin-bottom:28px }
+      .login-header h1{
+        font-size:2rem; font-weight:700; color:var(--text); margin-bottom:8px
+      }
+      .login-header p{ color:var(--muted); font-size:.95rem }
+
+      .form-group{ margin-bottom:18px }
+      .form-group label{
+        display:block; color:var(--muted); font-weight:600;
+        margin-bottom:6px; font-size:.95rem
+      }
+      .form-group input{
+        width:100%; padding:12px 14px; font-size:1rem; outline:0;
+        border:1px solid var(--primary-200); border-radius:10px;
+        background:#fff; color:var(--text);
+        transition:border-color .2s ease, box-shadow .2s ease, background .2s;
+      }
+      .form-group input::placeholder{ color:#8aa7bf }
+      .form-group input:focus{
+        border-color:var(--primary);
+        box-shadow:0 0 0 3px rgba(42,141,242,.18);
+      }
+
+      .login-button{
+        width:100%; margin-top:6px; padding:14px;
+        border:none; border-radius:10px; color:#fff; font-weight:700; font-size:1.05rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-600));
+        cursor:pointer; box-shadow:0 8px 18px rgba(42,141,242,.35);
+        transition: filter .2s ease, transform .05s ease, box-shadow .2s ease;
+      }
+      .login-button:hover{ filter:brightness(1.05) }
+      .login-button:active{ transform:translateY(1px) }
+
+      .back-link{ text-align:center; margin-top:16px }
+      .back-link a{
+        color:var(--primary); text-decoration:none; font-size:.92rem;
+      }
+      .back-link a:hover{ text-decoration:underline }
+
+      /* Thông báo trạng thái */
+      .alert{
+        padding:12px; border-radius:10px; margin-bottom:16px; font-size:.95rem
+      }
+      .alert-error{
+        background:#ffefef; color:#b42318; border:1px solid #ffd2d2;
+      }
+      .alert-ok{
+        background:#effaf3; color:#1b7f43; border:1px solid #c7edd8;
+      }
+
+      /* Tăng tương phản nút/tab khi người dùng dùng bàn phím */
+      :focus-visible{ outline:3px solid rgba(42,141,242,.35); outline-offset:2px }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-header">
+        <h1>Đăng nhập</h1>
+        <p>Vui lòng đăng nhập để tiếp tục</p>
+      </div>
+
+      <form action="${pageContext.request.contextPath}/login" method="POST">
+        <c:if test="${not empty requestScope.error}">
+          <div class="alert alert-error">${requestScope.error}</div>
+        </c:if>
+        <c:if test="${not empty requestScope.message}">
+          <div class="alert alert-ok">${requestScope.message}</div>
+        </c:if>
+
+        <div class="form-group">
+          <label for="txtUsername">Tên đăng nhập</label>
+          <input type="text" name="username" id="txtUsername"
+                 placeholder="Nhập tên đăng nhập"
+                 value="${requestScope.username}" required />
         </div>
-    </body>
+
+        <div class="form-group">
+          <label for="txtPassword">Mật khẩu</label>
+          <input type="password" name="password" id="txtPassword"
+                 placeholder="Nhập mật khẩu" required />
+        </div>
+
+        <c:if test="${not empty param.redirect}">
+          <input type="hidden" name="redirect" value="${param.redirect}"/>
+        </c:if>
+
+        <input type="submit" id="btnLogin" class="login-button" value="Đăng nhập"/>
+      </form>
+
+      <div class="back-link">
+        <a href="${pageContext.request.contextPath}/">← Quay lại trang chủ</a>
+      </div>
+    </div>
+  </body>
 </html>
