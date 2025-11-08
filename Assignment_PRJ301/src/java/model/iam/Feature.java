@@ -7,7 +7,6 @@ package model.iam;
 import java.util.ArrayList;
 import model.BaseModel;
 
-
 public class Feature extends BaseModel {
     private String url;
     private ArrayList<Role> roles = new ArrayList<>();
