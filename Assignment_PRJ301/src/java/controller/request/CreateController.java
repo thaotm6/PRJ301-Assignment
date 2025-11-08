@@ -68,4 +68,40 @@ public class CreateController extends BaseRequiredAuthorizationController {
             req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
             return;
         }
+        // Parse dates
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date fromDate = null;
+        Date toDate = null;
         
+        try {
+            fromDate = dateFormat.parse(fromDateStr);
+            toDate = dateFormat.parse(toDateStr);
+        } catch (ParseException ex) {
+            req.setAttribute("error", "Ngày tháng không hợp lệ!");
+            prepareFormData(req, user, null);
+            req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
+            return;
+        }
+        
+        // Kiểm tra ngày bắt đầu phải trước hoặc bằng ngày kết thúc
+        if (fromDate.after(toDate)) {
+            req.setAttribute("error", "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc!");
+            prepareFormData(req, user, null);
+            req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
+            return;
+        }
+         // Kiểm tra ngày bắt đầu không được là quá khứ (tùy chọn - có thể cho phép nghỉ trong quá khứ)
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        cal.set(java.util.Calendar.MINUTE, 0);
+        cal.set(java.util.Calendar.SECOND, 0);
+        cal.set(java.util.Calendar.MILLISECOND, 0);
+        Date today = cal.getTime();
+        if (fromDate.before(today)) {
+            req.setAttribute("error", "Ngày bắt đầu không được là quá khứ!");
+            prepareFormData(req, user, null);
+            req.getRequestDispatcher("/view/request/create.jsp").forward(req, resp);
+            return;
+        }
+        
+        try {
