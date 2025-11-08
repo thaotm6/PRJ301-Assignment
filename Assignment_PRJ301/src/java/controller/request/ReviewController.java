@@ -56,3 +56,40 @@ public class ReviewController extends BaseRequiredAuthorizationController {
             forwardWithRequest(req, resp, targetRequest, user, note);
             return;
         }
+        String trimmedNote = note != null ? note.trim() : null;
+        if ("reject".equalsIgnoreCase(decision) && (trimmedNote == null || trimmedNote.isEmpty())) {
+            req.setAttribute("error", "Vui lòng nhập lý do khi từ chối đơn.");
+            req.setAttribute("noteInput", note);
+            forwardWithRequest(req, resp, targetRequest, user, note);
+            return;
+        }
+        if (trimmedNote != null && trimmedNote.length() > 255) {
+            req.setAttribute("error", "Ghi chú xử lý không được vượt quá 255 ký tự.");
+            req.setAttribute("noteInput", note);
+            forwardWithRequest(req, resp, targetRequest, user, note);
+            return;
+        }
+        
+        int newStatus = "approve".equalsIgnoreCase(decision)
+                ? RequestForLeave.STATUS_APPROVED
+                : RequestForLeave.STATUS_REJECTED;
+        
+        RequestForLeaveDBContext updateDb = new RequestForLeaveDBContext();
+        boolean updated = updateDb.updateStatus(rid, newStatus,
+                user.getEmployee() != null ? user.getEmployee().getId() : -1,
+                (trimmedNote != null && !trimmedNote.isEmpty()) ? trimmedNote : null);
+        
+        if (!updated) {
+            req.setAttribute("error", "Không thể cập nhật đơn nghỉ phép. Có thể đơn đã được xử lý trước đó.");
+            req.setAttribute("noteInput", note);
+        } else {
+            req.setAttribute("success", newStatus == RequestForLeave.STATUS_APPROVED
+                    ? "Đã duyệt đơn nghỉ phép thành công."
+                    : "Đã từ chối đơn nghỉ phép.");
+        }
+        
+        RequestForLeave refreshed = loadRequest(rid);
+        req.setAttribute("noteInput", updated && refreshed != null ? refreshed.getProcessNote() : note);
+        forwardWithRequest(req, resp, refreshed != null ? refreshed : targetRequest, user,
+                updated && refreshed != null ? refreshed.getProcessNote() : note);
+    }
