@@ -1,7 +1,7 @@
 <%-- 
     Document   : home
-    Created on : Nov 8, 2025, 5:37:12 PM
-    Author     : Admin
+    Created on : Nov 8, 2025
+    Author     : sonnt
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -13,134 +13,115 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Trang chủ - Hệ thống quản lý</title>
         <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
-                padding: 20px;
-            }
-            .container {
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-            .header {
-                background: white;
-                border-radius: 20px;
-                padding: 30px 40px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                margin-bottom: 30px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .user-info {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            }
-            .user-avatar {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-size: 1.5em;
-                font-weight: 600;
-            }
-            .user-details h2 {
-                color: #333;
-                font-size: 1.3em;
-                margin-bottom: 5px;
-            }
-            .user-details p {
-                color: #666;
-                font-size: 0.9em;
-            }
-            .logout-btn {
-                background: #f44336;
-                color: white;
-                padding: 10px 20px;
-                border-radius: 10px;
-                text-decoration: none;
-                font-weight: 600;
-                transition: background 0.3s ease;
-            }
-            .logout-btn:hover {
-                background: #d32f2f;
-            }
-            .content {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 20px;
-            }
-            .card {
-                background: white;
-                border-radius: 20px;
-                padding: 30px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            .card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
-            }
-            .card-icon {
-                font-size: 3em;
-                margin-bottom: 15px;
-            }
-            .card-title {
-                color: #333;
-                font-size: 1.3em;
-                font-weight: 600;
-                margin-bottom: 10px;
-            }
-            .card-description {
-                color: #666;
-                font-size: 0.95em;
-                margin-bottom: 20px;
-                line-height: 1.6;
-            }
-            .card-link {
-                display: inline-block;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 12px 25px;
-                border-radius: 10px;
-                text-decoration: none;
-                font-weight: 600;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            }
-            .card-link:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-            }
-            .welcome-message {
-                background: white;
-                border-radius: 20px;
-                padding: 30px 40px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                margin-bottom: 30px;
-                text-align: center;
-            }
-            .welcome-message h1 {
-                color: #333;
-                font-size: 2em;
-                margin-bottom: 10px;
-            }
-            .welcome-message p {
-                color: #666;
-                font-size: 1.1em;
-            }
-        </style>
+      /* ========= Blue Sea Pastel – dịu mắt, hiện đại ========= */
+      *{margin:0;padding:0;box-sizing:border-box}
+
+      :root{
+        --bg-1:#bfe6ff;        /* nền gradient nhạt */
+        --bg-2:#81d4fa;        /* xanh biển dịu */
+        --surface:#ffffff;     /* nền thẻ/card */
+        --text:#0c2a3f;        /* chữ chính */
+        --muted:#3f6b8a;       /* chữ phụ */
+        --primary:#2a8df2;     /* xanh chủ đạo */
+        --primary-600:#1877f2; /* hover/đậm hơn */
+        --primary-200:#90caf9; /* viền nhạt */
+        --shadow:0 12px 36px rgba(9,30,66,.14);
+        --shadow-strong:0 18px 48px rgba(9,30,66,.18);
+        --radius:20px;
+      }
+
+      body{
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height:100vh;
+        padding:20px;
+        color:var(--text);
+        background:linear-gradient(135deg,var(--bg-1),var(--bg-2));
+        background-attachment:fixed;
+      }
+
+      .container{max-width:1200px;margin:0 auto}
+
+      /* ===== Header / User bar ===== */
+      .header{
+        background:var(--surface);
+        border-radius:var(--radius);
+        padding:24px 32px;
+        box-shadow:var(--shadow);
+        margin-bottom:24px;
+        display:flex;justify-content:space-between;align-items:center;
+      }
+      .user-info{display:flex;align-items:center;gap:14px}
+
+      .user-avatar{
+        width:52px;height:52px;border-radius:50%;
+        display:flex;align-items:center;justify-content:center;
+        color:#fff;font-size:1.3rem;font-weight:700;
+        background:linear-gradient(135deg,#64b5f6,#1e88e5);
+        box-shadow:0 6px 16px rgba(30,136,229,.35);
+      }
+
+      .user-details h2{
+        color:var(--text);font-size:1.2rem;font-weight:700;margin-bottom:4px
+      }
+      .user-details p{color:var(--muted);font-size:.95rem}
+
+      .logout-btn{
+        background:linear-gradient(135deg,#ef5350,#e53935);
+        color:#fff;text-decoration:none;font-weight:700;border-radius:12px;
+        padding:10px 18px;transition:filter .2s ease, transform .05s ease;
+        box-shadow:0 8px 18px rgba(229,57,53,.25);
+      }
+      .logout-btn:hover{filter:brightness(1.07)}
+      .logout-btn:active{transform:translateY(1px)}
+
+      /* ===== Welcome banner ===== */
+      .welcome-message{
+        background:var(--surface);
+        border-radius:var(--radius);
+        padding:26px 32px;
+        box-shadow:var(--shadow);
+        margin-bottom:26px;
+        text-align:center;
+      }
+      .welcome-message h1{color:var(--text);font-size:1.8rem;margin-bottom:8px}
+      .welcome-message p{color:var(--muted);font-size:1rem}
+
+      /* ===== Cards grid ===== */
+      .content{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+        gap:22px;
+      }
+
+      .card{
+        background:var(--surface);
+        border-radius:var(--radius);
+        padding:26px 22px;
+        box-shadow:var(--shadow);
+        transition:transform .25s ease, box-shadow .25s ease;
+      }
+      .card:hover{
+        transform:translateY(-4px);
+        box-shadow:var(--shadow-strong);
+      }
+
+      .card-icon{font-size:2.6rem;margin-bottom:12px}
+      .card-title{color:var(--text);font-size:1.15rem;font-weight:700;margin-bottom:8px}
+      .card-description{color:var(--muted);font-size:.95rem;margin-bottom:18px;line-height:1.55}
+
+      .card-link{
+        display:inline-block;border:none;color:#fff;font-weight:700;
+        padding:10px 18px;border-radius:12px;text-decoration:none;
+        background:linear-gradient(135deg,var(--primary),var(--primary-600));
+        box-shadow:0 8px 18px rgba(42,141,242,.28);
+        transition:filter .2s ease, transform .05s ease;
+      }
+      .card-link:hover{filter:brightness(1.07)}
+      .card-link:active{transform:translateY(1px)}
+
+      /* Trợ năng: khi focus bằng bàn phím */
+      :focus-visible{outline:3px solid rgba(42,141,242,.35);outline-offset:2px}
+    </style>
     </head>
     <body>
         <div class="container">
@@ -211,5 +192,4 @@
         </div>
     </body>
 </html>
-
 

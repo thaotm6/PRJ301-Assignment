@@ -11,176 +11,122 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Duyệt đơn nghỉ phép</title>
         <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 30px 15px;
-            }
-            .container {
-                width: 100%;
-                max-width: 520px;
-            }
-            .card {
-                background-color: rgba(255, 255, 255, 0.95);
-                border-radius: 18px;
-                box-shadow: 0 25px 60px rgba(79, 134, 247, 0.35);
-                padding: 35px 40px;
-                color: #1f2a44;
-            }
-            .card h1 {
-                font-size: 1.6em;
-                margin-bottom: 20px;
-                font-weight: 600;
-                color: #0f1a3a;
-            }
-            .meta-row {
-                margin-bottom: 12px;
-                font-size: 0.95em;
-                line-height: 1.45;
-            }
-            .meta-label {
-                font-weight: 600;
-                color: #1a237e;
-            }
-            .reason-box {
-                border: 2px dashed rgba(26, 35, 126, 0.25);
-                border-radius: 14px;
-                padding: 18px;
-                margin-top: 6px;
-                margin-bottom: 24px;
-                font-size: 1.05em;
-                background: rgba(248, 249, 255, 0.85);
-                min-height: 80px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-align: center;
-                color: #283593;
-            }
-            .status-chip {
-                display: inline-block;
-                padding: 6px 14px;
-                border-radius: 20px;
-                font-size: 0.85em;
-                font-weight: 600;
-                margin-top: 4px;
-            }
-            .status-inprogress {
-                background-color: #fff3cd;
-                color: #856404;
-            }
-            .status-approved {
-                background-color: #d4edda;
-                color: #155724;
-            }
-            .status-rejected {
-                background-color: #f8d7da;
-                color: #721c24;
-            }
-            .alert {
-                padding: 14px 18px;
-                border-radius: 12px;
-                font-size: 0.95em;
-                margin-bottom: 18px;
-                border-left: 4px solid;
-            }
-            .alert-success {
-                background-color: rgba(212, 237, 218, 0.9);
-                color: #155724;
-                border-color: #28a745;
-            }
-            .alert-error {
-                background-color: rgba(248, 215, 218, 0.9);
-                color: #721c24;
-                border-color: #dc3545;
-            }
-            .note-group {
-                margin-bottom: 22px;
-            }
-            .note-group label {
-                display: block;
-                font-weight: 600;
-                margin-bottom: 8px;
-                color: #1a237e;
-            }
-            .note-group textarea {
-                width: 100%;
-                min-height: 110px;
-                padding: 12px 14px;
-                border-radius: 12px;
-                border: 1px solid rgba(26, 35, 126, 0.2);
-                font-family: inherit;
-                font-size: 0.95em;
-                resize: vertical;
-                background-color: rgba(255, 255, 255, 0.95);
-                color: #1f2a44;
-            }
-            .note-group textarea:disabled {
-                background-color: rgba(229, 232, 240, 0.6);
-                cursor: not-allowed;
-            }
-            .action-row {
-                display: flex;
-                gap: 16px;
-                justify-content: center;
-            }
-            .btn {
-                flex: 1;
-                padding: 14px 20px;
-                border-radius: 12px;
-                font-size: 1em;
-                font-weight: 600;
-                border: none;
-                cursor: pointer;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-            }
-            .btn:disabled {
-                cursor: not-allowed;
-                opacity: 0.7;
-                box-shadow: none;
-            }
-            .btn-reject {
-                background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-                color: #fff;
-                box-shadow: 0 12px 25px rgba(255, 117, 140, 0.35);
-            }
-            .btn-approve {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: #fff;
-                box-shadow: 0 12px 25px rgba(118, 75, 162, 0.35);
-            }
-            .btn:hover:not(:disabled) {
-                transform: translateY(-2px);
-                box-shadow: 0 16px 30px rgba(102, 126, 234, 0.4);
-            }
-            .footer-links {
-                margin-top: 20px;
-                text-align: center;
-            }
-            .footer-links a {
-                color: #1a237e;
-                text-decoration: none;
-                font-weight: 600;
-                transition: color 0.2s ease;
-            }
-            .footer-links a:hover {
-                color: #0d47a1;
-            }
-            .empty-message {
-                text-align: center;
-                font-size: 1em;
-                color: #283593;
-            }
-        </style>
+      /* ======= Blue Sea Pastel Theme ======= */
+      *{margin:0;padding:0;box-sizing:border-box}
+
+      :root{
+        --bg1:#cfefff;
+        --bg2:#9ed8ff;
+        --surface:#ffffff;
+        --text:#0c2a3f;
+        --muted:#3f6b8a;
+        --primary:#2a8df2;
+        --primary-600:#1e7ce0;
+        --primary-200:#bfe0ff;
+        --shadow:0 20px 50px rgba(9,30,66,.15);
+        --radius:18px;
+      }
+
+      body{
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background:linear-gradient(135deg,var(--bg1),var(--bg2));
+        min-height:100vh;
+        display:flex;align-items:center;justify-content:center;
+        padding:30px 15px;
+        color:var(--text);
+      }
+
+      .container{width:100%;max-width:520px}
+
+      .card{
+        background-color:var(--surface);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        padding:35px 40px;
+      }
+
+      .card h1{
+        font-size:1.6em;margin-bottom:20px;
+        font-weight:700;color:#093768;
+      }
+
+      .meta-row{margin-bottom:12px;font-size:.95em;line-height:1.45}
+      .meta-label{font-weight:700;color:#125faa}
+
+      .reason-box{
+        border:2px dashed rgba(42,141,242,.25);
+        border-radius:14px;
+        padding:18px;margin-top:6px;margin-bottom:24px;
+        font-size:1.05em;
+        background:rgba(241,249,255,.85);
+        min-height:80px;display:flex;align-items:center;justify-content:center;
+        text-align:center;color:#13598b;
+      }
+
+      .status-chip{
+        display:inline-block;padding:6px 14px;border-radius:20px;
+        font-size:.85em;font-weight:700;margin-top:4px;
+      }
+      .status-inprogress{background-color:#eaf3ff;color:#1a4e9f;border:1px solid #cfe0ff}
+      .status-approved{background-color:#d4edda;color:#155724}
+      .status-rejected{background-color:#f8d7da;color:#721c24}
+
+      .alert{
+        padding:14px 18px;border-radius:12px;font-size:.95em;
+        margin-bottom:18px;border-left:4px solid;
+      }
+      .alert-success{
+        background-color:rgba(212,237,218,.9);color:#155724;border-color:#28a745;
+      }
+      .alert-error{
+        background-color:rgba(248,215,218,.9);color:#721c24;border-color:#dc3545;
+      }
+
+      .note-group{margin-bottom:22px}
+      .note-group label{
+        display:block;font-weight:700;margin-bottom:8px;color:#125faa;
+      }
+      .note-group textarea{
+        width:100%;min-height:110px;padding:12px 14px;
+        border-radius:12px;border:1px solid var(--primary-200);
+        font-family:inherit;font-size:.95em;resize:vertical;
+        background-color:rgba(255,255,255,.95);color:var(--text);
+      }
+      .note-group textarea:disabled{
+        background-color:rgba(229,232,240,.6);cursor:not-allowed;
+      }
+
+      .action-row{
+        display:flex;gap:16px;justify-content:center;
+      }
+
+      .btn{
+        flex:1;padding:14px 20px;border-radius:12px;font-size:1em;font-weight:700;
+        border:none;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease;
+      }
+      .btn:disabled{cursor:not-allowed;opacity:.7;box-shadow:none}
+
+      .btn-reject{
+        background:linear-gradient(135deg,#ff7b88,#ff9ca4);
+        color:#fff;box-shadow:0 12px 25px rgba(255,123,136,.35);
+      }
+      .btn-approve{
+        background:linear-gradient(135deg,var(--primary),var(--primary-600));
+        color:#fff;box-shadow:0 12px 25px rgba(42,141,242,.35);
+      }
+      .btn:hover:not(:disabled){
+        transform:translateY(-2px);
+        box-shadow:0 16px 30px rgba(42,141,242,.4);
+      }
+
+      .footer-links{margin-top:20px;text-align:center}
+      .footer-links a{
+        color:var(--primary);text-decoration:none;font-weight:700;transition:color .2s;
+      }
+      .footer-links a:hover{color:var(--primary-600)}
+
+      .empty-message{text-align:center;font-size:1em;color:#13598b}
+    </style>
     </head>
     <body>
         <div class="container">

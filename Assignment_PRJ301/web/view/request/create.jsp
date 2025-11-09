@@ -1,3 +1,8 @@
+<%-- 
+    Document   : create
+    Created on : Nov 8, 2025
+    Author     : sonnt
+--%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -7,205 +12,139 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tạo đơn xin nghỉ phép - Hệ thống quản lý</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
-                padding: 20px;
-            }
-            .container {
-                max-width: 800px;
-                margin: 0 auto;
-                background: white;
-                border-radius: 20px;
-                padding: 40px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            }
-            .header {
-                text-align: center;
-                margin-bottom: 40px;
-            }
-            .header h1 {
-                color: #333;
-                font-size: 2em;
-                margin-bottom: 10px;
-                font-weight: 600;
-            }
-            .header p {
-                color: #666;
-                font-size: 0.95em;
-            }
-            .alert {
-                padding: 15px;
-                border-radius: 10px;
-                margin-bottom: 20px;
-                font-size: 0.95em;
-            }
-            .alert-error {
-                background-color: #fee;
-                color: #c33;
-                border: 1px solid #fcc;
-            }
-            .alert-success {
-                background-color: #efe;
-                color: #3c3;
-                border: 1px solid #cfc;
-            }
-            .form-group {
-                margin-bottom: 25px;
-            }
-            .form-group label {
-                display: block;
-                color: #333;
-                font-weight: 500;
-                margin-bottom: 8px;
-                font-size: 0.95em;
-            }
-            .form-group input[type="date"],
-            .form-group textarea {
-                width: 100%;
-                padding: 12px 15px;
-                border: 2px solid #e0e0e0;
-                border-radius: 10px;
-                font-size: 1em;
-                transition: border-color 0.3s ease, box-shadow 0.3s ease;
-                outline: none;
-                font-family: inherit;
-            }
-            .form-group input[type="date"]:focus,
-            .form-group textarea:focus {
-                border-color: #667eea;
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            }
-            .form-group textarea {
-                min-height: 120px;
-                resize: vertical;
-            }
-            .form-group small {
-                display: block;
-                color: #666;
-                font-size: 0.85em;
-                margin-top: 5px;
-            }
-            .form-actions {
-                display: flex;
-                gap: 15px;
-                margin-top: 30px;
-            }
-            .btn {
-                flex: 1;
-                padding: 15px;
-                border-radius: 10px;
-                font-size: 1.1em;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                text-decoration: none;
-                text-align: center;
-                border: none;
-            }
-            .btn-primary {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            }
-            .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-            }
-            .btn-secondary {
-                background: #f5f5f5;
-                color: #333;
-            }
-            .btn-secondary:hover {
-                background: #e0e0e0;
-            }
-            .back-link {
-                text-align: center;
-                margin-top: 20px;
-            }
-            .back-link a {
-                color: #667eea;
-                text-decoration: none;
-                font-size: 0.9em;
-                transition: color 0.3s ease;
-            }
-            .back-link a:hover {
-                color: #764ba2;
-                text-decoration: underline;
-            }
-            .profile-card {
-                background: #fef6ed;
-                border: 1px solid #f4dbc1;
-                border-radius: 15px;
-                padding: 20px 25px;
-                margin-bottom: 30px;
-            }
-            .profile-title {
-                font-size: 1.1em;
-                font-weight: 600;
-                color: #5a3e85;
-                margin-bottom: 12px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .profile-row {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 8px;
-                font-size: 0.95em;
-                flex-wrap: wrap;
-            }
-            .profile-label {
-                font-weight: 600;
-                color: #4b4b4b;
-                min-width: 90px;
-            }
-            .profile-value {
-                color: #333;
-                flex: 1;
-            }
-            .state-flow {
-                margin-top: 18px;
-                padding-top: 16px;
-                border-top: 1px dashed rgba(118, 75, 162, 0.3);
-            }
-            .state-flow-title {
-                font-weight: 600;
-                color: #5a3e85;
-                margin-bottom: 10px;
-                font-size: 0.92em;
-            }
-            .state-list {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-                font-size: 0.88em;
-                color: #555;
-            }
-            .state-item {
-                padding: 6px 12px;
-                border-radius: 999px;
-                background: rgba(118, 75, 162, 0.08);
-                border: 1px solid rgba(118, 75, 162, 0.2);
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                line-height: 1.3;
-            }
-            .state-item span {
-                font-weight: 600;
-                color: #4a3b8f;
-            }
-        </style>
-    </head>
+      <style>
+      /* ========= Blue Sea Pastel – dịu mắt, bỏ hoàn toàn tím ========= */
+      *{margin:0;padding:0;box-sizing:border-box}
+
+      :root{
+        --bg-1:#cfefff;          /* nền xanh rất nhạt */
+        --bg-2:#9ed8ff;          /* xanh biển dịu */
+        --surface:#ffffff;       /* nền thẻ */
+        --surface-alt:#f5fbff;   /* thẻ phụ/section */
+        --text:#0c2a3f;          /* chữ chính */
+        --muted:#3f6b8a;         /* chữ phụ */
+        --placeholder:#8aa7bf;
+        --primary:#2a8df2;       /* xanh chủ đạo */
+        --primary-600:#1e7ce0;   /* đậm hơn cho hover */
+        --primary-200:#bfe0ff;   /* viền input nhạt */
+        --shadow:0 12px 36px rgba(9,30,66,.14);
+        --radius:20px;
+      }
+
+      body{
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background:linear-gradient(135deg,var(--bg-1),var(--bg-2));
+        background-attachment:fixed;
+        min-height:100vh;
+        padding:20px;
+        color:var(--text);
+      }
+
+      .container{
+        max-width:800px;
+        margin:0 auto;
+        background:var(--surface);
+        border-radius:var(--radius);
+        padding:40px;
+        box-shadow:var(--shadow);
+      }
+
+      .header{text-align:center;margin-bottom:40px}
+      .header h1{
+        color:var(--text);
+        font-size:2em;
+        margin-bottom:10px;
+        font-weight:700;
+      }
+      .header p{color:var(--muted);font-size:.95em}
+
+      /* Alerts */
+      .alert{padding:15px;border-radius:10px;margin-bottom:20px;font-size:.95em}
+      .alert-error{background:#ffeff0;color:#c62828;border:1px solid #ffd5d8}
+      .alert-success{background:#effaf3;color:#1b7f43;border:1px solid #cdebd6}
+
+      /* Profile/Info card */
+      .profile-card{
+        background:var(--surface-alt);
+        border:1px solid var(--primary-200);
+        border-radius:15px;
+        padding:20px 25px;
+        margin-bottom:30px;
+        box-shadow:0 4px 14px rgba(42,141,242,.08);
+      }
+      .profile-title{
+        font-size:1.1em;font-weight:700;
+        color:#1e5aa7;           /* xanh đậm dịu */
+        margin-bottom:12px;display:flex;align-items:center;gap:10px;
+      }
+      .profile-row{display:flex;gap:10px;margin-bottom:8px;font-size:.95em;flex-wrap:wrap}
+      .profile-label{font-weight:700;color:var(--text);min-width:90px}
+      .profile-value{color:var(--text);flex:1}
+
+      .state-flow{margin-top:18px;padding-top:16px;border-top:1px dashed rgba(42,141,242,.35)}
+      .state-flow-title{font-weight:700;color:#1e5aa7;margin-bottom:10px;font-size:.92em}
+      .state-list{display:flex;flex-wrap:wrap;gap:12px;font-size:.88em;color:#4c6e87}
+      .state-item{
+        padding:6px 12px;border-radius:999px;
+        background:rgba(42,141,242,.08);
+        border:1px solid rgba(42,141,242,.20);
+        display:flex;align-items:center;gap:6px;line-height:1.3
+      }
+      .state-item span{font-weight:700;color:#1565c0}
+
+      /* Form fields */
+      .form-group{margin-bottom:25px}
+      .form-group label{
+        display:block;color:var(--text);font-weight:700;margin-bottom:8px;font-size:.95em
+      }
+      .form-group input[type="date"],
+      .form-group textarea{
+        width:100%;padding:12px 15px;
+        border:1px solid var(--primary-200);
+        border-radius:10px;font-size:1em;outline:none;font-family:inherit;
+        transition:border-color .2s ease, box-shadow .2s ease, background .2s;
+        background:#fff;color:var(--text);
+      }
+      .form-group input::placeholder,
+      .form-group textarea::placeholder{color:var(--placeholder)}
+      .form-group input[type="date"]:focus,
+      .form-group textarea:focus{
+        border-color:var(--primary);
+        box-shadow:0 0 0 3px rgba(42,141,242,.18);
+      }
+      .form-group textarea{min-height:120px;resize:vertical}
+      .form-group small{display:block;color:var(--muted);font-size:.85em;margin-top:5px}
+
+      /* Actions */
+      .form-actions{display:flex;gap:15px;margin-top:30px}
+      .btn{
+        flex:1;padding:15px;border-radius:10px;font-size:1.1em;font-weight:700;
+        cursor:pointer;transition:filter .2s ease, transform .05s ease, box-shadow .2s ease;
+        text-decoration:none;text-align:center;border:none;
+      }
+      .btn-primary{
+        background:linear-gradient(135deg,var(--primary),var(--primary-600));
+        color:#fff;box-shadow:0 8px 18px rgba(42,141,242,.28);
+      }
+      .btn-primary:hover{filter:brightness(1.07)}
+      .btn-primary:active{transform:translateY(1px)}
+      .btn-secondary{background:#f4f7fb;color:var(--text);border:1px solid var(--primary-200)}
+      .btn-secondary:hover{background:#e9f2ff}
+
+      .back-link{text-align:center;margin-top:20px}
+      .back-link a{
+        color:var(--primary);text-decoration:none;font-size:.9em;transition:color .2s
+      }
+      .back-link a:hover{color:var(--primary-600);text-decoration:underline}
+
+      /* Responsive */
+      @media (max-width:600px){
+        .container{padding:28px 22px}
+        .form-actions{flex-direction:column}
+      }
+      </style>
+      
+  </head>
     <body>
         <div class="container">
             <div class="header">
@@ -328,4 +267,3 @@
         
     </body>
 </html>
-

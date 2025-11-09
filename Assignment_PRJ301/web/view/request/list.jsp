@@ -11,145 +11,102 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Danh sách đơn nghỉ phép - Hệ thống quản lý</title>
         <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
-                padding: 20px;
-            }
-            .container {
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-            .header {
-                background: white;
-                border-radius: 20px;
-                padding: 30px 40px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                margin-bottom: 30px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .header h1 {
-                color: #333;
-                font-size: 2em;
-                font-weight: 600;
-            }
-            .header-actions {
-                display: flex;
-                gap: 15px;
-            }
-            .btn {
-                padding: 12px 25px;
-                border-radius: 10px;
-                text-decoration: none;
-                font-weight: 600;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                border: none;
-                cursor: pointer;
-                font-size: 1em;
-            }
-            .btn-primary {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            }
-            .btn-primary:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-            }
-            .btn-secondary {
-                background: #f5f5f5;
-                color: #333;
-            }
-            .btn-secondary:hover {
-                background: #e0e0e0;
-            }
-            .content {
-                background: white;
-                border-radius: 20px;
-                padding: 30px 40px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            }
-            .table-container {
-                overflow-x: auto;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
-            thead {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-            }
-            th {
-                padding: 15px;
-                text-align: left;
-                font-weight: 600;
-                font-size: 0.95em;
-            }
-            td {
-                padding: 15px;
-                border-bottom: 1px solid #e0e0e0;
-            }
-            tbody tr:hover {
-                background-color: #f5f5f5;
-            }
-            .status-badge {
-                display: inline-block;
-                padding: 5px 15px;
-                border-radius: 20px;
-                font-size: 0.85em;
-                font-weight: 600;
-            }
-            .status-inprogress {
-                background-color: #fff3cd;
-                color: #856404;
-            }
-            .status-approved {
-                background-color: #d4edda;
-                color: #155724;
-            }
-            .status-rejected {
-                background-color: #f8d7da;
-                color: #721c24;
-            }
-            .empty-message {
-                text-align: center;
-                padding: 60px 20px;
-                color: #666;
-            }
-            .empty-message-icon {
-                font-size: 4em;
-                margin-bottom: 20px;
-            }
-            .empty-message-text {
-                font-size: 1.2em;
-                margin-bottom: 20px;
-            }
-            .view-scope {
-                font-size: 0.95em;
-                color: #555;
-            }
-            .view-scope strong {
-                color: #333;
-            }
-            .request-title {
-                color: #3a4ed5;
-                font-weight: 600;
-                cursor: default;
-            }
-            .request-title:hover {
-                color: #2a3cc2;
-            }
-        </style>
+      /* ========= Blue Sea Pastel – thay tím bằng xanh dịu ========= */
+      *{margin:0;padding:0;box-sizing:border-box}
+
+      :root{
+        --bg-1:#cfefff;          /* nền xanh rất nhạt */
+        --bg-2:#9ed8ff;          /* xanh biển dịu */
+        --surface:#ffffff;
+        --text:#0c2a3f;
+        --muted:#3f6b8a;
+        --primary:#2a8df2;
+        --primary-600:#1e7ce0;
+        --primary-200:#bfe0ff;
+        --shadow:0 12px 36px rgba(9,30,66,.14);
+        --radius:20px;
+      }
+
+      body{
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background:linear-gradient(135deg,var(--bg-1),var(--bg-2));
+        background-attachment:fixed;
+        min-height:100vh;
+        padding:20px;
+        color:var(--text);
+      }
+
+      .container{max-width:1200px;margin:0 auto}
+
+      .header{
+        background:var(--surface);
+        border-radius:var(--radius);
+        padding:30px 40px;
+        box-shadow:var(--shadow);
+        margin-bottom:30px;
+        display:flex;justify-content:space-between;align-items:center;
+      }
+      .header h1{color:var(--text);font-size:2em;font-weight:700}
+
+      .header-actions{display:flex;gap:15px}
+
+      .btn{
+        padding:12px 25px;border-radius:10px;text-decoration:none;
+        font-weight:700;border:none;cursor:pointer;font-size:1em;
+        transition:filter .2s ease, transform .05s ease, box-shadow .2s ease;
+      }
+      .btn-primary{
+        background:linear-gradient(135deg,var(--primary),var(--primary-600));
+        color:#fff;box-shadow:0 8px 18px rgba(42,141,242,.28);
+      }
+      .btn-primary:hover{filter:brightness(1.07)}
+      .btn-primary:active{transform:translateY(1px)}
+
+      .btn-secondary{
+        background:#f4f7fb;color:var(--text);border:1px solid var(--primary-200);
+      }
+      .btn-secondary:hover{background:#e9f2ff}
+
+      .content{
+        background:var(--surface);
+        border-radius:var(--radius);
+        padding:30px 40px;
+        box-shadow:var(--shadow);
+      }
+
+      .table-container{overflow-x:auto}
+
+      table{width:100%;border-collapse:collapse;margin-top:20px}
+
+      thead{
+        background:linear-gradient(135deg,var(--primary),var(--primary-600));
+        color:#fff;
+      }
+      th{padding:15px;text-align:left;font-weight:700;font-size:.95em}
+      td{padding:15px;border-bottom:1px solid #e6eef7}
+
+      tbody tr:hover{background-color:#eef6ff}
+
+      .status-badge{
+        display:inline-block;padding:5px 15px;border-radius:20px;
+        font-size:.85em;font-weight:700;
+      }
+      .status-inprogress{background-color:#eaf3ff;color:#1a4e9f;border:1px solid #cfe0ff}
+      .status-approved{background-color:#d4edda;color:#155724}
+      .status-rejected{background-color:#f8d7da;color:#721c24}
+
+      .empty-message{text-align:center;padding:60px 20px;color:#667d92}
+      .empty-message-icon{font-size:4em;margin-bottom:20px}
+      .empty-message-text{font-size:1.2em;margin-bottom:20px}
+
+      .view-scope{font-size:.95em;color:#4a6a83}
+      .view-scope strong{color:var(--text)}
+
+      .request-title{
+        color:#2a8df2;font-weight:700;cursor:default;
+      }
+      .request-title:hover{color:#1e7ce0}
+    </style>
     </head>
     <body>
         <div class="container">
